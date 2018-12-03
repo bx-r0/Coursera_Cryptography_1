@@ -51,6 +51,15 @@ def AES_decrypt_block(key, data):
     cipher = AES.new(key, AES.MODE_ECB)
     e = cipher.decrypt(base64.b64decode(data))
     return base64.b64encode(e)
+def AES_encrypt_block(key, data):
+    """
+    Works with base64 encoded data
+    """
+
+    cipher = AES.new(key, AES.MODE_ECB)
+    e = cipher.encrypt(base64.b64decode(data))
+    return base64.b64encode(e)
+
 
 # CBC
 def CBC_Decrypt(iv, key, data, blocksize=16):
@@ -81,15 +90,24 @@ def CTR_Decrypt(iv, key, data, blocksize=16):
 
     # TODO - What proportion is it iv to counter?
 
-    nonce = hex_to_base64(base64_to_hex(iv)[:16] + "0" * 16)
-
+    plaintext = []
+    nonce = iv
     blocks = split_base64_into_blocks(data, 16)
 
-    d = AES_decrypt_block(key, nonce)
+    for block in blocks:
+        d = AES_encrypt_block(key, nonce)
 
-    pt = base64.b64decode(xor_base64(blocks[0], d))
+        pt = base64.b64decode(xor_base64(blocks[0], d))
 
-    print(pt)
+        # Increment
+        ivBytes = bytearray(base64.b64decode(iv))
+        ivBytes[15] += 1
+        iv = base64.b64encode(ivBytes)
+        nonce = iv
+
+        plaintext.append(pt)
+
+    print()
 
 def decrypt(key, cipherText, func):
 
