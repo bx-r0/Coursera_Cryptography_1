@@ -81,33 +81,29 @@ def CBC_Decrypt(iv, key, data, blocksize=16):
 
     resultBytes = b"".join(plainText)
     result = str(resultBytes)[2:-1]
-    #result = result.rstrip('\\x08')
-
     return result
 
 # CTR
 def CTR_Decrypt(iv, key, data, blocksize=16):
 
-    # TODO - What proportion is it iv to counter?
-
-    plaintext = []
+    plainText = []
     nonce = iv
     blocks = split_base64_into_blocks(data, 16)
 
     for block in blocks:
         d = AES_encrypt_block(key, nonce)
 
-        pt = base64.b64decode(xor_base64(blocks[0], d))
+        pt = base64.b64decode(xor_base64(block, d))
 
-        # Increment
-        ivBytes = bytearray(base64.b64decode(iv))
-        ivBytes[15] += 1
-        iv = base64.b64encode(ivBytes)
-        nonce = iv
+        # Increments
+        nonceHex = hex(int(base64_to_hex(nonce), 16) + 1)[2:]
+        nonce = hex_to_base64(nonceHex)
 
-        plaintext.append(pt)
+        plainText.append(pt)
 
-    print()
+    resultBytes = b"".join(plainText)
+    result = str(resultBytes)[2:-1]
+    return result
 
 def decrypt(key, cipherText, func):
 
