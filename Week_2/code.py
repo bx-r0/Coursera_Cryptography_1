@@ -2,12 +2,9 @@ from Crypto.Cipher import AES
 import base64
 import re
 import binascii
-
-# Conversions
-def hex_to_base64(hexString):
-    return base64.b64encode(binascii.unhexlify(hexString))
-def base64_to_hex(base64String):
-    return base64.b64decode(base64String).hex()
+import sys
+sys.path.insert(0, ".")
+import SharedCode
 
 # Encryption function
 def split_base64_into_blocks(string, number):
@@ -16,7 +13,7 @@ def split_base64_into_blocks(string, number):
     """
 
     # Converts to hex
-    hex = base64_to_hex(string)
+    hex = SharedCode.base64_to_hex(string)
     bytes = re.findall("..", hex)
 
     # Adds padding if the lengths are not equal
@@ -29,7 +26,7 @@ def split_base64_into_blocks(string, number):
 
         for i in range(x, x + number):
             chunk += bytes[i]
-        chunks.append(hex_to_base64(chunk))
+        chunks.append(SharedCode.hex_to_base64(chunk))
 
     return chunks
 def xor_base64(a, b):
@@ -59,7 +56,6 @@ def AES_encrypt_block(key, data):
     cipher = AES.new(key, AES.MODE_ECB)
     e = cipher.encrypt(base64.b64decode(data))
     return base64.b64encode(e)
-
 
 # CBC
 def CBC_Decrypt(iv, key, data, blocksize=16):
@@ -96,8 +92,8 @@ def CTR_Decrypt(iv, key, data, blocksize=16):
         pt = base64.b64decode(xor_base64(block, d))
 
         # Increments
-        nonceHex = hex(int(base64_to_hex(nonce), 16) + 1)[2:]
-        nonce = hex_to_base64(nonceHex)
+        nonceHex = hex(int(SharedCode.base64_to_hex(nonce), 16) + 1)[2:]
+        nonce = SharedCode.hex_to_base64(nonceHex)
 
         plainText.append(pt)
 
@@ -111,9 +107,9 @@ def decrypt(key, cipherText, func):
     iv = cipherText[:32]
 
     # Key needs to be raw bytes
-    key = base64.b64decode(hex_to_base64(key))
-    iv = hex_to_base64(iv)
-    data = hex_to_base64(ct)
+    key = base64.b64decode(SharedCode.hex_to_base64(key))
+    iv = SharedCode.hex_to_base64(iv)
+    data = SharedCode.hex_to_base64(ct)
 
     result = func(iv, key, data)
     print(result)
