@@ -46,7 +46,20 @@ data = loadData()
 
 # Positions of known key
 knownKey = [0] * 500
+answer = ""
 
+# First it checks for position of plaintext that are spaces
+    # This is because C1 ⊕ C2 = P1 ⊕ P2 and if P1 or P2 is a space the result will be 
+    # an upper or lowercase character
+
+    # For example:
+    #   V ⊕ ' ' = v
+
+# The fact that we known the plain text is a space allows us the retrieve the key bit. This
+# is because:
+#   C ⊕ K = P
+#       ==
+#   P ⊕ C = K
 for current_index, ciphertext in enumerate(data):
 
     # Number of times a space has been found in this position
@@ -71,12 +84,8 @@ for current_index, ciphertext in enumerate(data):
                         knownSpaces[charIndex] += 1
 
 
-    # Checks for hot spots
-    # Areas with above 7 counts are possibly space
-    # This is because C1 ⊕ C2 = P1 ⊕ P2 and if P1 or P2 is a space the result will be 
-    # an upper or lowercase character
-    # For example:
-    #   V ⊕ ' ' = v
+    # Loops through the positions to check for positions with 
+    # a high chance of being a space
     for index, spaceCount in enumerate(knownSpaces):
         
         # Out of a possible 9
@@ -86,17 +95,15 @@ for current_index, ciphertext in enumerate(data):
     # Now discover the key bit
     #   - 20 is hex for a space
     xorWithSpaces = bytes.fromhex(hexXor(ciphertext, "20" * len(ciphertext)))
-    for index, known in enumerate(knownIndices):
+    for index, knownSpacePosition in enumerate(knownIndices):
 
-        if known:
+        if knownSpacePosition:
             k =  xorWithSpaces[index]
             keyHex = hex(k)[2:].zfill(0)
             knownKey[index] = keyHex
 
-answer = ""
-
-# Splits hex into bytes
-cipherTextBytes = re.findall("..", targetCipherText)
+# The discovered key bits are then XORed against the target cipher text
+cipherTextBytes = re.findall("..", targetCipherText) # Splits hex into bytes
 for k, c in zip(knownKey, cipherTextBytes): 
 
     # Ignores positions key has not been found
