@@ -4,7 +4,7 @@ import re
 import binascii
 import sys
 sys.path.insert(0, ".")
-import SharedCode
+import Function
 
 # Encryption function
 def split_base64_into_blocks(string, number):
@@ -13,7 +13,7 @@ def split_base64_into_blocks(string, number):
     """
 
     # Converts to hex
-    hex = SharedCode.base64_to_hex(string)
+    hex = Function.Base64_To.hexadecimal(string)
     bytes = re.findall("..", hex)
 
     # Adds padding if the lengths are not equal
@@ -26,7 +26,7 @@ def split_base64_into_blocks(string, number):
 
         for i in range(x, x + number):
             chunk += bytes[i]
-        chunks.append(SharedCode.hex_to_base64(chunk))
+        chunks.append(Function.HexTo.base64(chunk))
 
     return chunks
 def xor_base64(a, b):
@@ -92,8 +92,8 @@ def CTR_Decrypt(iv, key, data, blocksize=16):
         pt = base64.b64decode(xor_base64(block, d))
 
         # Increments
-        nonceHex = hex(int(SharedCode.base64_to_hex(nonce), 16) + 1)[2:]
-        nonce = SharedCode.hex_to_base64(nonceHex)
+        nonceHex = hex(int(Function.Base64_To.hexadecimal(nonce), 16) + 1)[2:]
+        nonce = Function.HexTo.base64(nonceHex)
 
         plainText.append(pt)
 
@@ -107,9 +107,9 @@ def decrypt(key, cipherText, func):
     iv = cipherText[:32]
 
     # Key needs to be raw bytes
-    key = base64.b64decode(SharedCode.hex_to_base64(key))
-    iv = SharedCode.hex_to_base64(iv)
-    data = SharedCode.hex_to_base64(ct)
+    key = base64.b64decode(Function.HexTo.base64(key))
+    iv = Function.HexTo.base64(iv)
+    data = Function.HexTo.base64(ct)
 
     result = func(iv, key, data)
     print(result)

@@ -192,3 +192,17 @@ def splitBase64IntoBlocks(string, blocksize=16):
         chunks.append(HexTo.base64(chunk))
 
     return chunks
+
+def splitHexIntoBlocks(hexValue, blocksize):
+
+    pattern = "." + "{" + str(blocksize) + "}"
+
+    hexBytes = re.findall(pattern, hexValue)
+
+    if len(hexValue) % blocksize != 0:
+        # Finds the length of the last block
+        diff = len(hexValue) - len(hexBytes) * blocksize
+        t = hexValue[len(hexValue) - diff:]
+        hexBytes.append(t)
+
+    return hexBytes

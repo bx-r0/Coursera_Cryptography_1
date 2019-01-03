@@ -1,8 +1,8 @@
 import os
 import sys
 sys.path.insert(0, ".")
-import SharedCode
 from Crypto.Hash import SHA256
+import Function
 
 """
 Task description can be found in description.txt
@@ -25,7 +25,7 @@ if __name__ == "__main__":
     data = loadVideoFile("intro").hex()
 
     # Breaks into kilobytes - 2048 chars due to the data being hex represented 
-    blocks = SharedCode.splitHexIntoBlocks(data, 2048)
+    blocks = Function.splitHexIntoBlocks(data, 2048)
 
     # Reverses the list to compute the hash
     blocks = blocks[::-1]
