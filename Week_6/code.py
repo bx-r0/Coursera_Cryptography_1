@@ -1,5 +1,3 @@
-import math
-import decimal
 import gmpy2
 
 # This too big?
