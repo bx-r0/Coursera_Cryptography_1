@@ -9,6 +9,9 @@ def printSmallest(p, q):
     else:
         print(p)
 
+    # Spaces out answers
+    print()
+
 def challenge1():
 
     print("> Challenge 1")
@@ -25,6 +28,8 @@ def challenge1():
     q = A + x
 
     printSmallest(p, q)
+
+    return p, q, N
 
 def challenge2():
     """
@@ -51,8 +56,96 @@ def challenge2():
     printSmallest(p, q)
 
 def challenge3():
-    pass
+    """
+    Valid when |3p - 2q| < N^(1/4)
+
+    Solving
+    >>> 6N = A^2 - i^2 - A + i
+    
+
+    >>> [ax^2 + bx + c              = 0]
+    >>>  1i^2 - 1i - (A^2 - A - 6N) = 0
+
+    Therefore:
+
+        a = 1
+        b = -1
+        c = (A^2 - A - 6N)
+    """
+
+    print("> Challenge 3")
+    N = 720062263747350425279564435525583738338084451473999841826653057981916355690188337790423408664187663938485175264994017897083524079135686877441155132015188279331812309091996246361896836573643119174094961348524639707885238799396839230364676670221627018353299443241192173812729276147530748597302192751375739387929
+    A = gmpy2.ceil(gmpy2.sqrt(6*N))
+    
+    a = gmpy2.mpz(1)
+    b = gmpy2.mpz(-1)
+    c = gmpy2.mpz(-(A**2 - A - 6*N))
+
+    # Solving using quadratic formula
+    # 
+    #   x = (-b (+/-) b^2 - 4ac) / 2a
+    #
+    # b^2 - 4ac
+    det = gmpy2.isqrt(b**2 - 4*a*c)
+
+    plus = gmpy2.div(-b + det, 2*a)
+    minus = gmpy2.div(-b - det, 2*a)
+
+    answers = [plus, minus]
+
+    for i in answers:
+
+        # check for correct answer
+        p = gmpy2.mpz(gmpy2.div(A + i - 1, 3))
+        q = gmpy2.mpz(gmpy2.div(A - i, 2))
+
+        # values found
+        if p*q == N:
+            printSmallest(p, q)
+
+            return
+
+
+    raise(Exception("[Challenge 3] > Could not find p or q"))
+
+def num_to_string(no):
+    nodig = no.digits(256)
+    return "".join(map(chr, nodig))
+
+def challenge4(RSAValues):
+    """
+    RSA Decryption challenge. Use previously found values of q and p to decrypt a provided message
+    """
+
+    print("> Challenge 4")
+    e = gmpy2.mpz(65537)
+    c = gmpy2.mpz(22096451867410381776306561134883418017410069787892831071731839143676135600120538004282329650473509424343946219751512256465839967942889460764542040581564748988013734864120452325229320176487916666402997509188729971690526083222067771600019329260870009579993724077458967773697817571267229951148662959627934791540)
+
+    # Runs challenge 1 again to obtain the values
+    p, q, N = RSAValues
+
+    Nphi = gmpy2.mpz((p - 1)*(q - 1))
+
+    # Private key generation
+    d = gmpy2.invert(e, Nphi)
+
+    m = gmpy2.powmod(c, d, N)
+    m = gmpy2.to_binary(m)[::-1]
+    
+    
+    # PKCS1
+    printing = False
+    
+    for byte in m:
+
+        # Split character used here is \x00
+        if byte == 0: printing = True
+        if printing: print(chr(byte), end='') 
+
+    print()
 
 if __name__ == "__main__":
-    challenge1() # Submit without the .0
+    x = challenge1()
     challenge2()
+    challenge3()
+    challenge4(x)
