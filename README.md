@@ -1,6 +1,6 @@
 <img align="right" src="./logo.png">
 
-# Coursera - Cryptography 1
+# Cryptography 1
 This repository contains the programming assignments for Dan Boneh's Cryptography I course.
 
 ## Week 1 - Many time pad
