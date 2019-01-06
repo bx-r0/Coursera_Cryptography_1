@@ -1,6 +1,9 @@
-<img align="right" src="./logo.png">
+<p align="center">
+  <img src="./logo.png">
+  <h1 align="center"> Cryptography I</h1>
+</p>
 
-# Cryptography 1
+
 This repository contains the programming assignments for Dan Boneh's Cryptography I course.
 
 ## Week 1 - Many time pad
