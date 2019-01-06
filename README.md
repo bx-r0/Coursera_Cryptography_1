@@ -9,7 +9,7 @@ This repository contains the programming assignments for Dan Boneh's Cryptograph
 ## Week 1 - Many time pad
 This programming assignment involved the cracking of 10 ciphertexts that had been encrypted using the same one time pad. 
 
-This assignment was designed to show that a one-time pad should only be used once.
+This assignment was designed to show that a one-time pad should only be used **once**.
 
 
 ## Week 2 - AES
@@ -23,7 +23,7 @@ Week 3's assignment was to build a hashing scheme that verified data in chunks. 
 ## Week 4 - CBC Padding Oracle Attack
 This assignment was one of the most interesting. We were provided with a 'toy' website that verified a ciphertext. If the decryption failed and the website releases information about what error has occurred (padding invalid in this case) it forms what is known as a 'padding oracle'. This small leak of information can be enough to fully encrypt the ciphertext!
 
-This is known as a [padding oracle attack](https://help.github.com/articles/about-readmes/).
+This is known as a [padding oracle attack](https://en.wikipedia.org/wiki/Padding_oracle_attack).
 
 
 ## Week 5 - Discrete Modulo Log
